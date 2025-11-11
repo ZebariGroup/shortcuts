@@ -11,7 +11,6 @@ const COLUMNS = {
 }
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortColumn, setSortColumn] = useState('name')
   const [sortDirection, setSortDirection] = useState('asc')
@@ -129,14 +128,9 @@ function App() {
 
   const filteredShortcuts = useMemo(() => {
     let filtered = shortcuts.filter(shortcut => {
-      const matchesSearch = 
-        shortcut.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shortcut.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        shortcut.keys.some(key => key.toLowerCase().includes(searchQuery.toLowerCase()))
-      
       const matchesCategory = selectedCategory === 'all' || shortcut.category === selectedCategory
       
-      return matchesSearch && matchesCategory
+      return matchesCategory
     })
 
     // Sort
@@ -161,7 +155,7 @@ function App() {
     })
 
     return filtered
-  }, [searchQuery, selectedCategory, sortColumn, sortDirection])
+  }, [selectedCategory, sortColumn, sortDirection])
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -204,13 +198,6 @@ function App() {
       </header>
 
       <div className="controls">
-        <input
-          type="text"
-          placeholder="Search shortcuts..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-        />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
@@ -257,7 +244,7 @@ function App() {
 
       {filteredShortcuts.length === 0 ? (
         <div className="no-results">
-          No shortcuts found. Try a different search term or product.
+          No shortcuts found. Try a different product.
         </div>
       ) : (
         <div className="table-wrapper">
