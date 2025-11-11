@@ -10,11 +10,6 @@ const COLUMNS = {
   platform: { label: 'Platform', visible: true, minWidth: 100 }
 }
 
-// Generate unique ID for a shortcut
-const getShortcutId = (shortcut) => {
-  return `${shortcut.category}-${shortcut.name}-${shortcut.keys.join('+')}`
-}
-
 function App() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [sortColumn, setSortColumn] = useState('name')
@@ -23,10 +18,10 @@ function App() {
   const [showColumnMenu, setShowColumnMenu] = useState(false)
   const [copiedIndex, setCopiedIndex] = useState(null)
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
-  const [favorites, setFavorites] = useState(() => {
-    // Load favorites from localStorage on mount
+  const [favoriteProducts, setFavoriteProducts] = useState(() => {
+    // Load favorite products from localStorage on mount
     try {
-      const saved = localStorage.getItem('shortcuts-favorites')
+      const saved = localStorage.getItem('shortcuts-favorite-products')
       return saved ? JSON.parse(saved) : []
     } catch {
       return []
@@ -47,14 +42,14 @@ function App() {
 
   const categories = ['all', ...new Set(shortcuts.map(s => s.category))].sort()
 
-  // Save favorites to localStorage whenever they change
+  // Save favorite products to localStorage whenever they change
   useEffect(() => {
     try {
-      localStorage.setItem('shortcuts-favorites', JSON.stringify(favorites))
+      localStorage.setItem('shortcuts-favorite-products', JSON.stringify(favoriteProducts))
     } catch (error) {
-      console.error('Failed to save favorites:', error)
+      console.error('Failed to save favorite products:', error)
     }
-  }, [favorites])
+  }, [favoriteProducts])
 
   // Close column menu when clicking outside
   useEffect(() => {
@@ -107,19 +102,19 @@ function App() {
     setResizeStartWidth(columnWidths[column])
   }
 
-  const toggleFavorite = (shortcut) => {
-    const id = getShortcutId(shortcut)
-    setFavorites(prev => {
-      if (prev.includes(id)) {
-        return prev.filter(favId => favId !== id)
+  const toggleFavoriteProduct = (category) => {
+    if (category === 'all') return
+    setFavoriteProducts(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(cat => cat !== category)
       } else {
-        return [...prev, id]
+        return [...prev, category]
       }
     })
   }
 
-  const isFavorite = (shortcut) => {
-    return favorites.includes(getShortcutId(shortcut))
+  const isProductFavorite = (category) => {
+    return favoriteProducts.includes(category)
   }
 
   const autoFitColumns = () => {
@@ -168,7 +163,7 @@ function App() {
   const filteredShortcuts = useMemo(() => {
     let filtered = shortcuts.filter(shortcut => {
       const matchesCategory = selectedCategory === 'all' || shortcut.category === selectedCategory
-      const matchesFavorites = !showFavoritesOnly || isFavorite(shortcut)
+      const matchesFavorites = !showFavoritesOnly || isProductFavorite(shortcut.category)
       
       return matchesCategory && matchesFavorites
     })
@@ -195,7 +190,7 @@ function App() {
     })
 
     return filtered
-  }, [selectedCategory, sortColumn, sortDirection, showFavoritesOnly, favorites])
+  }, [selectedCategory, sortColumn, sortDirection, showFavoritesOnly, favoriteProducts])
 
   const handleSort = (column) => {
     if (sortColumn === column) {
@@ -228,7 +223,7 @@ function App() {
   }
 
   const visibleCols = Object.entries(visibleColumns).filter(([_, col]) => col.visible)
-  const totalWidth = visibleCols.reduce((sum, [key]) => sum + columnWidths[key], 0) + 120 // Increased for favorite button
+  const totalWidth = visibleCols.reduce((sum, [key]) => sum + columnWidths[key], 0) + 60
 
   return (
     <div className="app">
@@ -242,20 +237,34 @@ function App() {
           className={`favorites-toggle-btn ${showFavoritesOnly ? 'active' : ''}`}
           title={showFavoritesOnly ? 'Show all shortcuts' : 'Show favorites only'}
         >
-          {showFavoritesOnly ? '⭐ Favorites' : '☆ Favorites'} ({favorites.length})
+          {showFavoritesOnly ? '⭐ Favorites' : '☆ Favorites'} ({favoriteProducts.length})
         </button>
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="category-select"
-        >
-          <option value="all">All Products</option>
-          {categories.filter(c => c !== 'all').map(category => (
-            <option key={category} value={category}>
-              {getPlatformName(category)}
-            </option>
-          ))}
-        </select>
+        <div className="category-select-wrapper">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="category-select"
+          >
+            <option value="all">All Products</option>
+            {categories.filter(c => c !== 'all').map(category => (
+              <option key={category} value={category}>
+                {getPlatformName(category)}
+              </option>
+            ))}
+          </select>
+          {selectedCategory !== 'all' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                toggleFavoriteProduct(selectedCategory)
+              }}
+              className={`product-favorite-btn ${isProductFavorite(selectedCategory) ? 'favorited' : ''}`}
+              title={isProductFavorite(selectedCategory) ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {isProductFavorite(selectedCategory) ? '⭐' : '☆'}
+            </button>
+          )}
+        </div>
         <div className="column-menu-container" ref={columnMenuRef}>
           <button
             onClick={() => setShowColumnMenu(!showColumnMenu)}
@@ -291,7 +300,7 @@ function App() {
       {filteredShortcuts.length === 0 ? (
         <div className="no-results">
           {showFavoritesOnly 
-            ? 'No favorites found. Click the star icon to add shortcuts to favorites.'
+            ? 'No favorite products found. Select a product and click the star icon to add it to favorites.'
             : 'No shortcuts found. Try a different product.'}
         </div>
       ) : (
@@ -378,7 +387,7 @@ function App() {
                       />
                     </th>
                   )}
-                  <th className="action-col" style={{ width: '120px' }}>Actions</th>
+                  <th className="action-col" style={{ width: '60px' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -405,23 +414,14 @@ function App() {
                     {visibleColumns.platform.visible && (
                       <td className="platform-cell" style={{ width: `${columnWidths.platform}px` }}>{shortcut.platform || '-'}</td>
                     )}
-                    <td className="action-cell" style={{ width: '120px' }}>
-                      <div className="action-buttons">
-                        <button
-                          onClick={() => toggleFavorite(shortcut)}
-                          className={`favorite-btn ${isFavorite(shortcut) ? 'favorited' : ''}`}
-                          title={isFavorite(shortcut) ? 'Remove from favorites' : 'Add to favorites'}
-                        >
-                          {isFavorite(shortcut) ? '⭐' : '☆'}
-                        </button>
-                        <button
-                          onClick={() => copyShortcut(shortcut, index)}
-                          className="copy-btn"
-                          title="Copy shortcut keys"
-                        >
-                          {copiedIndex === index ? '✓' : '📋'}
-                        </button>
-                      </div>
+                    <td className="action-cell" style={{ width: '60px' }}>
+                      <button
+                        onClick={() => copyShortcut(shortcut, index)}
+                        className="copy-btn"
+                        title="Copy shortcut keys"
+                      >
+                        {copiedIndex === index ? '✓' : '📋'}
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -433,7 +433,7 @@ function App() {
 
       <footer className="footer">
         Showing {filteredShortcuts.length} of {shortcuts.length} shortcuts
-        {showFavoritesOnly && ` • ${favorites.length} favorites`}
+        {showFavoritesOnly && ` • ${favoriteProducts.length} favorite products`}
       </footer>
     </div>
   )
