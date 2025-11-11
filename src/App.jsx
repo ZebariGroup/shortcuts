@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { shortcuts } from './data/shortcuts'
 import './App.css'
 
@@ -18,8 +18,23 @@ function App() {
   const [visibleColumns, setVisibleColumns] = useState(COLUMNS)
   const [showColumnMenu, setShowColumnMenu] = useState(false)
   const [copiedIndex, setCopiedIndex] = useState(null)
+  const columnMenuRef = useRef(null)
 
   const categories = ['all', ...new Set(shortcuts.map(s => s.category))].sort()
+
+  // Close column menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (columnMenuRef.current && !columnMenuRef.current.contains(event.target)) {
+        setShowColumnMenu(false)
+      }
+    }
+
+    if (showColumnMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showColumnMenu])
 
   const filteredShortcuts = useMemo(() => {
     let filtered = shortcuts.filter(shortcut => {
@@ -114,7 +129,7 @@ function App() {
             </option>
           ))}
         </select>
-        <div className="column-menu-container">
+        <div className="column-menu-container" ref={columnMenuRef}>
           <button
             onClick={() => setShowColumnMenu(!showColumnMenu)}
             className="column-toggle-btn"
