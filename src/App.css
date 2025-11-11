@@ -83,7 +83,8 @@
 }
 
 .column-toggle-btn,
-.auto-fit-btn {
+.auto-fit-btn,
+.favorites-toggle-btn {
   padding: 0.4rem 0.8rem;
   border: 1px solid #3d3d4e;
   background: #252535;
@@ -96,9 +97,16 @@
 }
 
 .column-toggle-btn:hover,
-.auto-fit-btn:hover {
+.auto-fit-btn:hover,
+.favorites-toggle-btn:hover {
   border-color: #667eea;
   background: #2d2d4e;
+}
+
+.favorites-toggle-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
 }
 
 .column-menu {
@@ -281,12 +289,46 @@
 }
 
 .action-col {
-  width: 60px;
+  width: 120px;
   text-align: center;
 }
 
 .action-cell {
   text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.favorite-btn {
+  background: transparent;
+  border: 1px solid #3d3d4e;
+  color: #e0e0e0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  min-width: 32px;
+}
+
+.favorite-btn:hover {
+  background: #2d2d3e;
+  border-color: #667eea;
+  transform: scale(1.1);
+}
+
+.favorite-btn.favorited {
+  color: #ffd700;
+  border-color: #ffd700;
+}
+
+.favorite-btn:active {
+  transform: scale(0.95);
 }
 
 .copy-btn {
