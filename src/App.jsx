@@ -194,7 +194,6 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>⌨️ Shortcuts Reference</h1>
-        <p className="subtitle">{shortcuts.length} shortcuts across {new Set(shortcuts.map(s => s.platform)).size} products</p>
       </header>
 
       <div className="controls">
