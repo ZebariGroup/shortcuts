@@ -25,20 +25,16 @@ function App() {
     <div className="app">
       <header className="header">
         <h1>⌨️ Shortcuts Reference</h1>
-        <p className="subtitle">Your central source for keyboard shortcuts across all major OS, apps, and browsers</p>
       </header>
 
       <div className="controls">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="Search shortcuts..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-        </div>
-
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+        />
         <div className="category-filters">
           {categories.map(category => (
             <button
@@ -52,48 +48,46 @@ function App() {
         </div>
       </div>
 
-      <div className="shortcuts-grid">
-        {filteredShortcuts.map((shortcut, index) => (
-          <ShortcutCard key={index} shortcut={shortcut} />
-        ))}
-      </div>
-
-      {filteredShortcuts.length === 0 && (
+      {filteredShortcuts.length === 0 ? (
         <div className="no-results">
-          <p>No shortcuts found. Try a different search term or category.</p>
+          No shortcuts found.
         </div>
+      ) : (
+        <table className="shortcuts-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Keys</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Platform</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredShortcuts.map((shortcut, index) => (
+              <tr key={index}>
+                <td className="name-cell">{shortcut.name}</td>
+                <td className="keys-cell">
+                  {shortcut.keys.map((key, idx) => (
+                    <span key={idx} className="key">
+                      {key}
+                    </span>
+                  ))}
+                </td>
+                <td className="description-cell">{shortcut.description}</td>
+                <td className="category-cell">{shortcut.category}</td>
+                <td className="platform-cell">{shortcut.platform || '-'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
 
       <footer className="footer">
-        <p>Total shortcuts: {shortcuts.length} | Showing: {filteredShortcuts.length}</p>
+        {filteredShortcuts.length} / {shortcuts.length}
       </footer>
     </div>
   )
 }
 
-function ShortcutCard({ shortcut }) {
-  return (
-    <div className="shortcut-card">
-      <div className="shortcut-header">
-        <h3>{shortcut.name}</h3>
-        <span className="category-badge">{shortcut.category}</span>
-      </div>
-      <p className="shortcut-description">{shortcut.description}</p>
-      <div className="shortcut-keys">
-        {shortcut.keys.map((key, idx) => (
-          <span key={idx} className="key">
-            {key}
-          </span>
-        ))}
-      </div>
-      {shortcut.platform && (
-        <div className="shortcut-platform">
-          <span className="platform-label">Platform:</span> {shortcut.platform}
-        </div>
-      )}
-    </div>
-  )
-}
-
 export default App
-

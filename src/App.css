@@ -1,46 +1,38 @@
 .app {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0.2rem;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 0.3rem;
   color: white;
 }
 
 .header h1 {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  margin: 0.1rem 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
 }
 
 .controls {
   background: #1e1e2e;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  margin-bottom: 2rem;
+  padding: 0.3rem;
+  border-radius: 4px;
+  margin-bottom: 0.3rem;
   border: 1px solid #2d2d3e;
-}
-
-.search-container {
-  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
 }
 
 .search-input {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border: 2px solid #3d3d4e;
-  border-radius: 8px;
-  transition: border-color 0.3s;
+  flex: 1;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.9rem;
+  border: 1px solid #3d3d4e;
+  border-radius: 4px;
   background: #252535;
   color: #e0e0e0;
 }
@@ -56,20 +48,18 @@
 
 .category-filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.2rem;
 }
 
 .category-btn {
-  padding: 0.5rem 1rem;
-  border: 2px solid #3d3d4e;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #3d3d4e;
   background: #252535;
   color: #e0e0e0;
-  border-radius: 20px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-  font-weight: 500;
+  font-size: 0.8rem;
+  transition: all 0.2s;
 }
 
 .category-btn:hover {
@@ -83,93 +73,78 @@
   border-color: #667eea;
 }
 
-.shortcuts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.shortcut-card {
+.shortcuts-table {
+  width: 100%;
+  border-collapse: collapse;
   background: #1e1e2e;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
   border: 1px solid #2d2d3e;
+  margin-bottom: 0.3rem;
 }
 
-.shortcut-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+.shortcuts-table thead {
+  background: #252535;
 }
 
-.shortcut-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
-}
-
-.shortcut-header h3 {
-  font-size: 1.1rem;
-  color: #e0e0e0;
-  flex: 1;
-}
-
-.category-badge {
-  background: #667eea;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
+.shortcuts-table th {
+  padding: 0.3rem 0.5rem;
+  text-align: left;
+  font-size: 0.85rem;
   font-weight: 600;
-  text-transform: uppercase;
-  margin-left: 0.5rem;
+  color: #e0e0e0;
+  border-bottom: 2px solid #3d3d4e;
 }
 
-.shortcut-description {
-  color: #b0b0b0;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
+.shortcuts-table td {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  color: #e0e0e0;
+  border-bottom: 1px solid #2d2d3e;
 }
 
-.shortcut-keys {
+.shortcuts-table tbody tr:hover {
+  background: #252535;
+}
+
+.name-cell {
+  font-weight: 500;
+}
+
+.keys-cell {
   display: flex;
+  gap: 0.2rem;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
 }
 
 .key {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
   font-weight: 600;
   font-family: 'Courier New', monospace;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   display: inline-block;
 }
 
-.shortcut-platform {
-  font-size: 0.85rem;
-  color: #888;
-  padding-top: 0.75rem;
-  border-top: 1px solid #2d2d3e;
+.description-cell {
+  color: #b0b0b0;
 }
 
-.platform-label {
-  font-weight: 600;
+.category-cell {
+  text-transform: capitalize;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.platform-cell {
+  color: #888;
+  font-size: 0.8rem;
 }
 
 .no-results {
   text-align: center;
-  padding: 3rem;
+  padding: 0.5rem;
   background: #1e1e2e;
-  border-radius: 12px;
   color: #b0b0b0;
   border: 1px solid #2d2d3e;
 }
@@ -177,24 +152,31 @@
 .footer {
   text-align: center;
   color: white;
-  padding: 1rem;
+  padding: 0.2rem;
   opacity: 0.9;
+  font-size: 0.8rem;
 }
 
 @media (max-width: 768px) {
   .app {
-    padding: 1rem;
+    padding: 0.1rem;
   }
 
   .header h1 {
-    font-size: 2rem;
+    font-size: 1.2rem;
   }
 
-  .subtitle {
-    font-size: 1rem;
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .shortcuts-grid {
-    grid-template-columns: 1fr;
+  .shortcuts-table {
+    font-size: 0.75rem;
+  }
+
+  .shortcuts-table th,
+  .shortcuts-table td {
+    padding: 0.2rem 0.3rem;
   }
 }
